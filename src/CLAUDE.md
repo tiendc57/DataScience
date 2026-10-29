@@ -9,7 +9,7 @@
 | 1. Thu thập | `crawl_data.ipynb` | Sinh `raw_data_oto.csv` (~14.8k dòng, 14 cột) |
 | 2. Khám phá | `visualize_raw_data.ipynb`, `figures/` | Biểu đồ cho báo cáo (PNG 200 dpi) |
 | 3. Tiền xử lý | `preprocess_data.ipynb` | `raw_data_oto.csv` → `clean_data_oto.csv` (13.937 dòng, 18 cột; nhãn hiếm gộp theo cấp dòng → hãng → nhóm hãng cao cấp/phổ thông, có cột `mileage_missing`, tỉnh/thành `province` (dạng slug) trích từ URL); `clean_data.ipynb` là bản cũ theo hướng phân loại `fuel` |
-| 4. Mô hình | `model.ipynb` | Ridge, Decision Tree, Random Forest, mỗi cái viết bằng thư viện và tự cài đặt NumPy; mục 7 là thí nghiệm log giá + cân bằng (CV trên train) |
+| 4. Mô hình | `model.ipynb` | Chỉ 2 mô hình: Ridge và Random Forest, mỗi cái viết bằng thư viện và tự cài đặt NumPy (cây đơn chỉ là thành phần kiểm chứng của RF). Hai bộ đặc trưng số: Ridge dùng `age²`, `log(km)` + chuẩn hóa; RF dùng số gốc. Mục 7 là thí nghiệm log giá + cân bằng (CV trên train). Biểu đồ lưu ở `figures/m01-m14` |
 | 5. Mô hình đã lưu | `../model/` (cạnh `src/`) | `.joblib`, `.npz`, `metadata.json`, `price_model.py` (nạp và dự đoán); `.pkl` tạo lại bằng `python export_pkl.py` sau mỗi lần chạy `model.ipynb` |
 
 `feeback/DANH_GIA_CODE.md` (ngoài `src/`) là bài đánh giá code ngày 27/10/2026; các mục 3.1-3.6 đã được sửa.
@@ -36,7 +36,8 @@ cd src
 python -m jupyter nbconvert --to notebook --execute <tên>.ipynb --output <tên>.ipynb --ExecutePreprocessor.timeout=-1
 ```
 
-- `model.ipynb` mất khoảng 15 phút (rừng cây tự cài đặt chạy Python thuần khoảng 8 phút cả tinh chỉnh; thí nghiệm CV mục 7 khoảng 2 phút). Các notebook khác chỉ vài chục giây.
+- `model.ipynb` mất khoảng 12 phút (rừng cây tự cài đặt chạy Python thuần khoảng 5 phút cả tinh chỉnh; thí nghiệm CV mục 7 khoảng 2,5 phút). `preprocess_data.ipynb` khoảng 2 phút (mục 7.4 có CV kiểm chứng cách gộp nhãn). Notebook khác chỉ vài chục giây.
+- Notebook được chạy bằng `nbconvert` chỉ ghi output vào file khi chạy xong toàn bộ; lỗi ở bất kỳ cell nào thì không lưu gì.
 - Trên Windows cần chạy Python với UTF-8 (`python -X utf8`) khi in tiếng Việt ra console.
 - Môi trường tham chiếu: pandas 3.0, scikit-learn 1.9, imbalanced-learn 0.14, scipy. File `.pkl` trong `model/` cần cùng phiên bản scikit-learn khi nạp và cần `model/price_model.py` trong `sys.path`.
 
@@ -44,10 +45,9 @@ python -m jupyter nbconvert --to notebook --execute <tên>.ipynb --output <tên>
 
 | Mô hình | MAPE | R² (log) |
 |---|---|---|
-| Baseline (trung vị) | 0,849 | -0,003 |
-| Ridge | 0,220 | 0,829 |
-| Decision Tree (thư viện / tự cài đặt) | 0,202 / 0,200 | 0,828 / 0,822 |
-| Random Forest (thư viện) | 0,160 | 0,883 |
-| Random Forest (tự cài đặt) | 0,165 | 0,872 |
+| Baseline (trung vị) | 0,835 | -0,003 |
+| Ridge (thư viện / tự cài đặt) | 0,185 / 0,185 | 0,873 |
+| Random Forest (thư viện) | 0,155 | 0,891 |
+| Random Forest (tự cài đặt) | 0,157 | 0,887 |
 
-Thí nghiệm CV trên train (Random Forest): log giá MAPE 0,165 so với giá gốc 0,211; trọng số mẫu / oversampling / undersampling làm MAPE tổng tăng (0,172-0,175) nên không dùng. Mô hình yếu nhất ở hai đầu thang giá (RF: < 200 triệu 0,36; > 2 tỷ 0,31). Khoảng 15% dòng test có bản sao (tin đăng lại) trong train; trên phần còn lại MAPE RF là 0,171. Giá là **giá rao bán**, không phải giá giao dịch; dữ liệu thiếu phiên bản/trang bị xe.
+RF tốt hơn Ridge 3,0 điểm % (bootstrap ghép cặp, KTC 95%: 2,1-4,0); RF tự cài đặt và thư viện không khác nhau có ý nghĩa. Thí nghiệm CV trên train (RF): log giá MAPE 0,162 so với giá gốc 0,196; trọng số mẫu / oversampling giữ MAPE tổng (0,161-0,163) nhưng giảm > 2 tỷ từ 0,274 xuống 0,24; undersampling 0,168. Mô hình cuối không cân bằng (oversampling là lựa chọn nếu ưu tiên xe sang). RF theo phân khúc: < 200 triệu 0,35; > 2 tỷ 0,27. Khoảng 14% dòng test có bản sao (tin đăng lại) trong train; trên phần còn lại MAPE RF là 0,162. Giá là **giá rao bán**, không phải giá giao dịch; dữ liệu thiếu phiên bản/trang bị xe.

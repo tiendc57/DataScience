@@ -1,0 +1,3 @@
+Mục đích đề tài môn khoa học dữ liệu, dự đoán giá của oto dựa trên các đặc trưng, hãy điền vào ipynb này @src/preprocess_data.ipynb các kĩ thuật tiền xử lý dữ liệu, xử lý data mất cân bằng, ... xử lý giá trị trống, giải thích nguyên nhân tại sao lại xử lý như vậy dựa trên data từ csv @src/raw_data_oto.csv  . Sau khi xử lý xuất ra csv  @src/clean_data_oto.csv
+
+mục đích đề tài môn khoa học dữ liệu, dự đoán giá của oto dựa trên các đặc trưng, Hãy code vào file @src/model.ipynb, dựa vào dataset @src/clean_data_oto.csv đã clean hãy chọn 2 model machine learning (viết mỗi model theo 2 hướng: sử dụng thư viện, viết thuật toán mà không dùng thư viện trực tiếp) để thực hiện dự đoán giá oto, hãy sử dụng các kĩ thuật để tinh chỉnh tham số, lựa chọn các metric đánh giá,...

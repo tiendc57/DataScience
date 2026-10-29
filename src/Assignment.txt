@@ -1,0 +1,12 @@
+Nhóm 2 người
+1. Collect data
+2. model
+
+ko cần làm model to, viết từ đầu đến cuối 1 model, các metric
+VD: dự đoán trữ lượng điện đà nẵng
+xây model về machine learnin từ đầu đến cuối
+VD: ramdom force, decision tree
+các kĩ thuật data mất cần bằng,....
+
+3 tuần -> cuối tháng 11, 31/10
+slide trình bày + cuốn báo cáo + code demo

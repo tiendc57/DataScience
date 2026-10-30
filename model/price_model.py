@@ -6,7 +6,7 @@ Dùng:
     predict_price(m, df)   # df có các cột như mô tả bên dưới
 
 Các mô hình có sẵn:
-    ridge_sklearn, ridge_scratch, random_forest_sklearn, random_forest_scratch
+    random_forest_sklearn, random_forest_scratch (mô hình chính), ridge_sklearn (mô hình so sánh)
 
 Cột đầu vào (mỗi dòng là một xe), dùng đúng giá trị như trên Chợ Tốt:
     carbrand, carmodel      tên hãng và dòng xe ("Dòng khác" nếu không có trong danh sách)
@@ -35,7 +35,7 @@ import numpy as np
 import pandas as pd
 
 DIR = Path(__file__).resolve().parent
-MODELS = ("ridge_sklearn", "ridge_scratch", "random_forest_sklearn", "random_forest_scratch")
+MODELS = ("random_forest_sklearn", "random_forest_scratch", "ridge_sklearn")
 
 with open(DIR / "metadata.json", encoding="utf-8") as f:
     META = json.load(f)
@@ -77,16 +77,6 @@ def make_features(df):
     return d
 
 
-class _ScratchRidge:
-    """Ridge tự cài đặt: chỉ cần vector trọng số (phần tử đầu là hệ số tự do)."""
-
-    def __init__(self, path):
-        self.w = np.load(path)["w"]
-
-    def predict(self, X):
-        return self.w[0] + X @ self.w[1:]
-
-
 class _ScratchForest:
     """Random Forest tự cài đặt (chỉ phần dự đoán): bin hóa đặc trưng rồi đi qua từng cây."""
 
@@ -126,8 +116,6 @@ class PriceModel:
         self.columns = META["cat_features"] + (META["num_features_ridge"] if is_ridge else META["num_features_rf"])
         if name.endswith("sklearn"):
             self.est = joblib.load(DIR / f"{name}.joblib")
-        elif is_ridge:
-            self.est = _ScratchRidge(DIR / "ridge_scratch.npz")
         else:
             self.est = _ScratchForest(DIR / "random_forest_scratch.npz")
 

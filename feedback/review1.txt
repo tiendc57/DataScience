@@ -1,0 +1,36 @@
+*Đủ, và còn vượt yêu cầu của đề.* Đề chỉ cần "ko cần làm model to, viết từ đầu đến cuối 1 model, các metric", kèm Random Forest, Decision Tree và xử lý mất cân bằng. Bài này có đủ tất cả, lại còn tự cài đặt cả hai mô hình. So với một đồ án môn học ở cao học thì đây là mức khá đến tốt.
+
+## Những điểm đạt chuẩn cao học
+
+- *Tự thu thập dữ liệu thật*, không dùng dataset có sẵn trên Kaggle, và có phân tích cơ chế sinh ra từng loại lỗi trong dữ liệu.
+- *Làm sạch dữ liệu có lập luận*: phân biệt thiếu có cấu trúc với thiếu ngẫu nhiên, và nhận ra giá trả trước là nhãn sai.
+- *Đánh giá chặt chẽ*: tập test chỉ dùng một lần, mọi lựa chọn đều làm bằng CV trên train, có baseline, có MAPE theo phân khúc, có bootstrap ghép cặp để kiểm định ý nghĩa thống kê.
+- *Tự cài đặt có kiểm chứng*: Ridge làm cả nghiệm đóng lẫn Gradient Descent Nesterov; cây CART chia nút bằng histogram; có OOB; kết quả so khớp với sklearn.
+- *Thí nghiệm có đối chứng* (log giá, các kỹ thuật cân bằng, cách gộp nhãn), và nêu hạn chế một cách trung thực.
+
+## Chỗ hội đồng cao học có thể hỏi hoặc trừ điểm
+
+Xếp theo mức độ, kèm thời gian sửa ước lượng:
+
+1. *Thiếu phần tổng quan nghiên cứu liên quan* (khoảng 1–2 giờ). Báo cáo cao học thường cần 1–2 trang điểm qua các công trình dự đoán giá xe cũ đã có (chủ yếu dùng Linear Regression, RF, XGBoost, với MAPE hay R² bao nhiêu) để định vị kết quả 15,5% của nhóm. Hiện danh sách tài liệu tham khảo chỉ có sách giáo khoa và bài báo gốc của thuật toán.
+2. *Chưa so với Gradient Boosting* (khoảng 30 phút). Đây là mô hình mạnh nhất hiện nay cho dữ liệu dạng bảng, gần như chắc chắn sẽ bị hỏi "sao không thử XGBoost?". Chỉ cần thêm một dòng HistGradientBoostingRegressor, tinh chỉnh bằng CV, vào bảng kết quả. Dù tốt hơn hay kém hơn RF thì cũng trả lời được câu hỏi đó.
+3. *Độ quan trọng đặc trưng dùng impurity* (khoảng 20 phút). Cách đo này bị lệch khi đặc trưng tương quan với nhau và khi có nhiều cột one-hot. Con số "hộp số 18%" rất dễ bị vặn, vì xe số sàn thường là xe cũ, tức là trùng thông tin với tuổi xe. Nên thêm permutation_importance tính trên tập test để đối chiếu.
+4. **Chưa có requirements.txt, file mô hình cũng không có trong repo** (khoảng 10 phút). Thiếu những thứ này thì người khác khó chạy lại được kết quả.
+5. *Chia train/test theo nhóm mới chỉ nêu ở phần hạn chế* (khoảng 30 phút). Nếu còn thời gian, nên chạy thật StratifiedGroupKFold và báo cáo con số đó làm kết quả phụ. Làm như vậy chặt chẽ hơn là chỉ ghi "hơi lạc quan".
+
+Những thứ *không cần thêm*: deep learning, SHAP, khoảng dự đoán cho từng xe. Chúng hay, nhưng vượt phạm vi đề và không đáng làm khi hạn nộp là ngày mai.
+
+## Chuẩn bị cho phần hỏi đáp
+
+Rủi ro lớn nhất không nằm ở code, mà ở việc *trả lời câu hỏi*. Code được viết với AI và có nhiều kỹ thuật nâng cao, nên cả hai bạn cần tự giải thích được những câu dễ bị hỏi:
+
+- Vì sao học trên log giá mà vẫn báo cáo MAPE trên giá thật?
+- Công thức gain khi chia nút, và vì sao chia đặc trưng thành 32 bin không làm mất nhiều thông tin.
+- OOB là gì, và vì sao khoảng 37% mẫu nằm ngoài bootstrap?
+- Vì sao bước học của Gradient Descent là 1/L, và momentum Nesterov giúp gì?
+- Bootstrap ghép cặp khác gì so với việc nhìn hai khoảng tin cậy có chồng nhau không?
+- Vì sao oversampling không giúp nhiều cho xe trên 2 tỷ?
+
+*Nếu chỉ còn một buổi tối, mình khuyên:* làm mục 2 (thêm Gradient Boosting) và mục 4 (requirements.txt), điền thông tin cá nhân như đã nói ở lượt trước, rồi dành thời gian còn lại ôn các câu hỏi trên. Mục 1 (tổng quan nghiên cứu) đáng làm nếu giảng viên coi trọng phần báo cáo.
+
+Nếu muốn, mình có thể viết sẵn đoạn code cho Gradient Boosting và permutation importance khớp với model.ipynb, hoặc soạn một bộ câu hỏi bảo vệ kèm đáp án ngắn.

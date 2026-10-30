@@ -8,8 +8,8 @@
 |---|---|---|
 | 1. Thu thập | `crawl_data.ipynb` | Sinh `raw_data_oto.csv` (~14.8k dòng, 14 cột) |
 | 2. Khám phá | `visualize_raw_data.ipynb`, `figures/` | Biểu đồ cho báo cáo (PNG 200 dpi) |
-| 3. Tiền xử lý | `preprocess_data.ipynb` | `raw_data_oto.csv` → `clean_data_oto.csv` (13.937 dòng, 18 cột; nhãn hiếm gộp theo cấp dòng → hãng → nhóm hãng cao cấp/phổ thông, có cột `mileage_missing`, tỉnh/thành `province` (dạng slug) trích từ URL); `clean_data.ipynb` là bản cũ theo hướng phân loại `fuel` |
-| 4. Mô hình | `model.ipynb` | Chỉ 2 mô hình: Ridge và Random Forest, mỗi cái viết bằng thư viện và tự cài đặt NumPy (cây đơn chỉ là thành phần kiểm chứng của RF). Hai bộ đặc trưng số: Ridge dùng `age²`, `log(km)` + chuẩn hóa; RF dùng số gốc. Mục 7 là thí nghiệm log giá + cân bằng (CV trên train). Biểu đồ lưu ở `figures/m01-m14` |
+| 3. Tiền xử lý | `preprocess_data.ipynb` | `raw_data_oto.csv` → `clean_data_oto.csv` (13.937 dòng, 17 cột; nhãn hiếm gộp theo cấp dòng → hãng → nhóm hãng cao cấp/phổ thông, có cột `mileage_missing`; `province` chỉ dùng trong notebook, không xuất vì không giúp dự đoán); `clean_data.ipynb` là bản cũ theo hướng phân loại `fuel` |
+| 4. Mô hình | `model.ipynb` | Trọng tâm là Random Forest: bản thư viện + bản tự cài đặt NumPy (cây đơn chỉ là thành phần kiểm chứng). Ridge chỉ dùng thư viện để so sánh (không tự cài đặt). RF dùng one-hot + số gốc (mục 3 kiểm chứng one-hot tốt hơn mã số thứ tự bằng CV); Ridge dùng `age²`, `log(km)` + chuẩn hóa. Có permutation importance (mục 8.2), thí nghiệm log giá + cân bằng (mục 9), CV chia theo nhóm cho tin đăng lại (mục 10). Biểu đồ lưu ở `figures/m01`, `m05-m15` |
 | 5. Mô hình đã lưu | `../model/` (cạnh `src/`) | `.joblib`, `.npz`, `metadata.json`, `price_model.py` (nạp và dự đoán); `.pkl` tạo lại bằng `python export_pkl.py` sau mỗi lần chạy `model.ipynb` |
 
 `feeback/DANH_GIA_CODE.md` (ngoài `src/`) là bài đánh giá code ngày 27/10/2026; các mục 3.1-3.6 đã được sửa.
@@ -46,7 +46,7 @@ python -m jupyter nbconvert --to notebook --execute <tên>.ipynb --output <tên>
 | Mô hình | MAPE | R² (log) |
 |---|---|---|
 | Baseline (trung vị) | 0,835 | -0,003 |
-| Ridge (thư viện / tự cài đặt) | 0,185 / 0,185 | 0,873 |
+| Ridge (thư viện, so sánh) | 0,185 | 0,873 |
 | Random Forest (thư viện) | 0,155 | 0,891 |
 | Random Forest (tự cài đặt) | 0,157 | 0,887 |
 

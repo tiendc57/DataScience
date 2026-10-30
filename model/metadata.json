@@ -748,7 +748,7 @@
       "MAPE 500-1.000": 0.3073,
       "MAPE 1-2 tỷ": 0.641,
       "MAPE > 2 tỷ": 0.8545,
-      "Thời gian fit (s)": 0.0011
+      "Thời gian fit (s)": 0.0016
     },
     "Random Forest - thư viện": {
       "MAPE": 0.1549,
@@ -763,7 +763,7 @@
       "MAPE 500-1.000": 0.1088,
       "MAPE 1-2 tỷ": 0.1574,
       "MAPE > 2 tỷ": 0.2703,
-      "Thời gian fit (s)": 12.2376
+      "Thời gian fit (s)": 9.2815
     },
     "Random Forest - tự cài đặt": {
       "MAPE": 0.1569,
@@ -778,7 +778,7 @@
       "MAPE 500-1.000": 0.1083,
       "MAPE 1-2 tỷ": 0.1585,
       "MAPE > 2 tỷ": 0.3044,
-      "Thời gian fit (s)": 150.5049
+      "Thời gian fit (s)": 142.772
     },
     "Ridge - thư viện": {
       "MAPE": 0.1847,
@@ -793,7 +793,7 @@
       "MAPE 500-1.000": 0.1259,
       "MAPE 1-2 tỷ": 0.1668,
       "MAPE > 2 tỷ": 0.3429,
-      "Thời gian fit (s)": 0.0387
+      "Thời gian fit (s)": 0.0409
     }
   },
   "sklearn_version": "1.9.0",

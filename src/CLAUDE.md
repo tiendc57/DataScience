@@ -9,7 +9,7 @@
 | 1. Thu thập | `crawl_data.ipynb` | Sinh `raw_data_oto.csv` (~14.8k dòng, 14 cột) |
 | 2. Khám phá | `visualize_raw_data.ipynb`, `figures/` | Biểu đồ cho báo cáo (PNG 200 dpi) |
 | 3. Tiền xử lý | `preprocess_data.ipynb` | `raw_data_oto.csv` → `clean_data_oto.csv` (13.937 dòng, 17 cột; nhãn hiếm gộp theo cấp dòng → hãng → nhóm hãng cao cấp/phổ thông, có cột `mileage_missing`; `province` chỉ dùng trong notebook, không xuất vì không giúp dự đoán); `clean_data.ipynb` là bản cũ theo hướng phân loại `fuel` |
-| 4. Mô hình | `model.ipynb` | Trọng tâm là Random Forest: bản thư viện + bản tự cài đặt NumPy (cây đơn chỉ là thành phần kiểm chứng). Ridge chỉ dùng thư viện để so sánh (không tự cài đặt). RF dùng one-hot + số gốc (mục 3 kiểm chứng one-hot tốt hơn mã số thứ tự bằng CV); Ridge dùng `age²`, `log(km)` + chuẩn hóa. Có permutation importance (mục 8.2), thí nghiệm log giá + cân bằng (mục 9), CV chia theo nhóm cho tin đăng lại (mục 10). Biểu đồ lưu ở `figures/m01`, `m05-m15` |
+| 4. Mô hình | `model.ipynb` | Trọng tâm là Random Forest: bản thư viện + bản tự cài đặt NumPy (cây đơn chỉ là thành phần kiểm chứng). Ridge chỉ dùng thư viện để so sánh (không tự cài đặt). RF dùng one-hot + số gốc (mục 3 kiểm chứng one-hot tốt hơn mã số thứ tự bằng CV); Ridge dùng `age²`, `log(km)` + chuẩn hóa. Có permutation importance (mục 8.2), thí nghiệm log giá + cân bằng (mục 9), CV chia theo nhóm cho tin đăng lại (mục 10). Biểu đồ lưu ở `figures/m01`, `m05-m18` (`preprocess_data.ipynb` lưu `p01-p04`) |
 | 5. Mô hình đã lưu | `../model/` (cạnh `src/`) | `.joblib`, `.npz`, `metadata.json`, `price_model.py` (nạp và dự đoán); `.pkl` tạo lại bằng `python export_pkl.py` sau mỗi lần chạy `model.ipynb` |
 
 `feeback/DANH_GIA_CODE.md` (ngoài `src/`) là bài đánh giá code ngày 27/10/2026; các mục 3.1-3.6 đã được sửa.
@@ -23,7 +23,7 @@
 - **Biến mục tiêu**: `price_log` = ln(giá triệu đồng). Huấn luyện trên log, `exp()` khi dự đoán, **mọi metric tính trên giá thật**. Thước đo chính là MAPE; luôn báo cáo MAPE theo phân khúc giá (`< 200 triệu`, `200-500`, `500-1.000`, `1-2 tỷ`, `> 2 tỷ`).
 - **Không rò rỉ dữ liệu**: không dùng `price_tr`, `price_log` làm đặc trưng; chia train/test (80/20, phân tầng theo phân khúc giá, `random_state=42`) trước khi tinh chỉnh; tham số chỉ chọn bằng CV hoặc OOB trên train, tập test chỉ đánh giá một lần.
 - **`clean_data_oto.csv` giữ dữ liệu thật**, không chèn mẫu nhân bản hay tổng hợp. Cân bằng dữ liệu (nếu dùng) chỉ làm trên tập train sau khi chia.
-- **Giá trả trước / đặt cọc:** loại tin có giá < 30% trung vị của xe cùng hãng-dòng-năm (nhóm ≥ 3 xe), 134 tin. Đây là sửa lỗi nhãn, không phải tạo đặc trưng.
+- **Giá trả trước / đặt cọc:** loại tin có giá < 30% trung vị của xe cùng hãng-dòng-năm (nhóm ≥ 3 xe), 129 tin. Đây là sửa lỗi nhãn, không phải tạo đặc trưng.
 - **Mọi quyết định** (log giá, kỹ thuật cân bằng, tham số) chỉ dựa trên CV/OOB trên train; `preprocess_data.ipynb` không còn đánh giá gì trên tập test.
 - **Số km của xe mới = 0** (thiếu có cấu trúc), không điền trung vị. `carorigin` thiếu ~41% nên giữ nhãn "Không rõ".
 - Mô hình tự cài đặt phải được **kiểm chứng** với bản thư viện (cùng dữ liệu, cùng tham số) trước khi dùng.

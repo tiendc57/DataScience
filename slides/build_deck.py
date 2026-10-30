@@ -351,25 +351,37 @@ text(s, 0.6, 5.3, 12.1, 0.5, [[("Tái lập: ", {"bold": True, "color": BLUE}),
                               ("mọi bước ngẫu nhiên cố định random_state = 42, chạy lại cho đúng cùng kết quả.", {})]], size=15)
 
 # ---------------------------------------------------------------- 5. Thu thập
+IMG = Path("E:/DataScience/image")
 s = content("Phần 2 · Thu thập dữ liệu", "Crawl 14.835 tin rao bán ô tô từ Chợ Tốt",
-            "Code crawl duyệt 750 trang danh sách mới nhất, lấy link từng tin, rồi vào trang chi tiết đọc các thẻ HTML có thuộc tính itemprop, "
-            "ví dụ itemprop='mileage_v2' là số km. Có nghỉ giữa các yêu cầu và cơ chế chạy tiếp khi bị ngắt.")
-stats = [("750", "trang danh sách"), ("14.835", "tin rao bán"), ("12", "thuộc tính mỗi tin"), ("25/10/2026", "ngày thu thập")]
-for k, (v, l) in enumerate(stats):
-    x = 0.6 + k * 3.05
-    box(s, x, 1.6, 2.8, 1.45, fill=BLUE if k == 1 else TINT)
-    text(s, x, 1.68, 2.8, 0.75, [v], size=32, color=WHITE if k == 1 else BLUE, bold=True, align=PP_ALIGN.CENTER)
-    text(s, x, 2.42, 2.8, 0.45, [l], size=14, color=WHITE if k == 1 else MUTED, align=PP_ALIGN.CENTER)
-flow = ["Trang danh sách\n?page=1..750", "Link từng tin\n(bỏ link trùng)", "Trang chi tiết\nđọc thẻ itemprop", "raw_data_oto.csv\n14 cột"]
-for k, f in enumerate(flow):
-    x = 0.6 + k * 3.05
-    box(s, x, 3.35, 2.6, 1.0, fill=TINT_Y)
-    text(s, x, 3.4, 2.6, 0.9, f.split("\n"), size=14, color=INK, bold=False, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, space_after=0)
-    if k < 3:
-        arrow(s, x + 2.65, 3.7, 0.35, 0.3)
-text(s, 0.6, 4.6, 12.1, 1.5, ["requests + BeautifulSoup; tự lùi thời gian khi bị trả mã 403 / 429; nghỉ 0,5 giây mỗi tin, 1 giây mỗi trang",
-                              "Chỉ lấy thông tin công khai, không đăng nhập, không lấy thông tin liên hệ người bán; chỉ dùng cho học tập",
-                              "Chạy tiếp được khi bị ngắt: bỏ qua các URL đã có trong file"], size=14, bullets=True, space_after=6)
+            "Bước 1 (ảnh trái): duyệt 750 trang danh sách mới nhất mua-ban-oto?page=1..750, lấy link từng tin, bỏ link trùng (tin ưu tiên lặp lại ở mọi trang). "
+            "Bước 2 (ảnh phải): vào trang chi tiết, đọc các thẻ HTML có thuộc tính itemprop; khung cam là thẻ itemprop='mileage_v2' chứa số km 44.000. "
+            "Dùng requests + BeautifulSoup, nghỉ 0,5 giây mỗi tin và 1 giây mỗi trang, tự lùi thời gian khi bị trả mã 403/429, chạy tiếp được khi bị ngắt. "
+            "Chỉ lấy thông tin công khai, không lấy thông tin liên hệ người bán (tên và số điện thoại trong ảnh đã được che). "
+            "Khung xanh: trang còn các mục số đời chủ, còn hạn đăng kiểm mà code chưa lấy; đây là hướng phát triển.")
+text(s, 0.6, 1.4, 12.1, 0.4, [[("750 trang  ·  14.835 tin  ·  12 thuộc tính mỗi tin  ·  thu thập ngày 25/10/2026", {"bold": True, "color": ORANGE})]], size=16)
+
+
+def shot(path, x, y, w, h, marks, label, n):
+    pic = picture(s, path, x, y, w, h)
+    iw, ih = Image.open(path).size
+    sc = pic.width / Emu(Inches(1)) / iw if False else (pic.width / 914400) / iw
+    px, py = pic.left / 914400, pic.top / 914400
+    for (x0, y0, x1, y1), col in marks:
+        r = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(px + x0 * sc), Inches(py + y0 * sc),
+                               Inches((x1 - x0) * sc), Inches((y1 - y0) * sc))
+        r.fill.background(); r.line.color.rgb = col; r.line.width = Pt(2.5); r.shadow.inherit = False
+    badge(s, px - 0.15, py - 0.15, 0.45, str(n), fill=ORANGE if n == 2 else BLUE, size=14)
+    text(s, px + 0.4, 1.83, pic.width / 914400 - 0.4, 0.4, [label], size=14, color=BLUE, bold=True)
+
+
+shot(IMG / "Screenshot_1_che.png", 0.8, 2.3, 4.9, 3.65, [], "Trang danh sách: lấy link từng tin", 1)
+arrow(s, 5.95, 3.9, 0.7, 0.45)
+shot(IMG / "Screenshot_3_che.png", 6.9, 2.3, 4.9, 3.65,
+     [((723, 352, 1235, 390), ORANGE), ((352, 312, 570, 412), BLUE)],
+     "Trang chi tiết: đọc thẻ itemprop", 2)
+text(s, 11.9, 2.4, 1.2, 3.0, [[("khung cam:", {"bold": True, "color": ORANGE})], "thẻ itemprop số km",
+                              [("khung xanh:", {"bold": True, "color": BLUE})], "số đời chủ, đăng kiểm: chưa lấy"],
+     size=11, space_after=3)
 
 # ---------------------------------------------------------------- 6. Từ điển dữ liệu
 s = content("Phần 2 · Thu thập dữ liệu", "Từ điển dữ liệu: biết cột nào người bán gõ tự do",

@@ -17,10 +17,12 @@ Cột đầu vào (mỗi dòng là một xe), dùng đúng giá trị như trên
     mfdate hoặc age         năm sản xuất hoặc tuổi xe
     mileage_km              số km đã đi; xe mới = 0; để trống (None/NaN) nếu không biết
 
-Cách dựng đặc trưng giống preprocess_data.ipynb:
-    - Hãng / dòng xe hiếm hoặc chưa gặp được gộp theo cấp: dòng xe -> "<hãng> - dòng khác";
-      hãng hiếm -> "Hãng cao cấp khác" / "Hãng phổ thông khác".
-    - Xe đã dùng không rõ số km: điền trung vị số km của xe cùng năm sản xuất, đánh dấu mileage_missing = 1.
+Cách dựng đặc trưng giống CarImputer / BrandModelGrouper (src/car_transformers.py), với tham số
+học từ tập train ở process_data.ipynb và lưu trong metadata.json:
+    - Hãng / dòng xe hiếm hoặc chưa gặp được gộp theo cấp: dòng xe không thuộc keep_model (hoặc "Dòng khác")
+      -> "<nhóm hãng> - dòng khác"; hãng không thuộc keep_brand -> "Hãng cao cấp khác" / "Hãng phổ thông khác".
+    - Xe đã dùng không rõ số km: điền trung vị số km của xe cùng năm sản xuất (học từ train), mileage_missing = 1.
+    - Không rõ xuất xứ / kiểu dáng: truyền "Không rõ" (hoặc để trống).
 
 Lưu ý:
     - Tuổi xe tính theo năm 2026 (năm thu thập dữ liệu và huấn luyện). Giữ nguyên khi dùng ở năm sau.
@@ -42,6 +44,8 @@ with open(DIR / "metadata.json", encoding="utf-8") as f:
 CURRENT_YEAR = META["current_year"]
 KM_MED = {int(k): v for k, v in META["mileage_median_by_year"].items()}
 LUXURY = set(META["luxury_brands"])
+KEEP_BRAND = set(META["keep_brand"])
+KEEP_MODEL = set(META["keep_model"])
 
 
 def make_features(df):
@@ -62,13 +66,20 @@ def make_features(df):
     d["mileage_km"] = km
     d["km_per_year"] = km / d["age"].clip(lower=1)
 
-    # Gộp nhãn hiếm theo cấp, dùng bảng học từ dữ liệu huấn luyện
+    # Nhãn hằng khi không rõ (giống preprocess / CarImputer)
+    for c in ("carorigin", "cartype"):
+        if c in d:
+            d[c] = d[c].fillna("Không rõ")
+
+    # Gộp nhãn hiếm theo cấp: cùng logic BrandModelGrouper.transform, danh sách nhãn học từ train
     if "carbrand_grp" not in d:
-        other = np.where(d["carbrand"].isin(LUXURY), "Hãng cao cấp khác", "Hãng phổ thông khác")
-        d["carbrand_grp"] = d["carbrand"].map(META["brand_group"]).fillna(pd.Series(other, index=d.index))
+        b = d["carbrand"]
+        other = np.where(b.isin(LUXURY), "Hãng cao cấp khác", "Hãng phổ thông khác")
+        d["carbrand_grp"] = pd.Series(np.where(b.isin(KEEP_BRAND), b, other), index=d.index)
     if "carmodel_grp" not in d:
         full = d["carbrand"] + " " + d["carmodel"]
-        d["carmodel_grp"] = full.map(META["model_group"]).fillna(d["carbrand_grp"] + " - dòng khác")
+        keep = full.isin(KEEP_MODEL) & (d["carmodel"] != "Dòng khác")
+        d["carmodel_grp"] = full.where(keep, d["carbrand_grp"] + " - dòng khác")
 
     # Biến đổi cho Ridge
     d["age_sq"] = d["age"] ** 2

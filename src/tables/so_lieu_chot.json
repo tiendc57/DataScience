@@ -1,0 +1,31 @@
+{
+  "so_tin_tho": 14835,
+  "so_tin_sau_tien_xu_ly": 14066,
+  "ti_le_giu_sau_tien_xu_ly": 0.9482,
+  "ngay_crawl": "25/10/2026",
+  "so_hang": 69,
+  "so_dong_xe": 509,
+  "train": 11153,
+  "test": 2797,
+  "loai_dat_coc_train": 99,
+  "loai_dat_coc_test": 17,
+  "so_tin_sach": 13950,
+  "so_nhom_hang": 27,
+  "so_nhom_dong_xe": 196,
+  "doi_chung_chenh_lech_diem_pct": 0.044,
+  "so_dac_trung": 12,
+  "mape_rf": 0.1512,
+  "mape_rf_tu_cai_dat": 0.1573,
+  "mape_ridge": 0.1846,
+  "mape_baseline": 0.8797,
+  "medape_rf": 0.0882,
+  "pct_20_rf": 0.7944,
+  "r2_log_rf": 0.9098,
+  "mape_rf_truoc_khi_sua": 0.155,
+  "mape_ridge_truoc_khi_sua": 0.185,
+  "dac_trung_quan_trong_nhat": "Tuổi xe",
+  "hieu_ridge_rf_ci95": [
+    2.42,
+    4.42
+  ]
+}

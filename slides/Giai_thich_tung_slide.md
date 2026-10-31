@@ -1,6 +1,6 @@
 # Giải thích chi tiết từng slide
 
-Tài liệu đi kèm file `Bao_cao_Du_doan_gia_o_to.pptx` (35 slide), dùng để hai thành viên nắm chắc nội dung trước khi thuyết trình và trả lời câu hỏi.
+Tài liệu đi kèm file `Bao_cao_Du_doan_gia_o_to.pptx` (36 slide), dùng để hai thành viên nắm chắc nội dung trước khi thuyết trình và trả lời câu hỏi.
 
 **Cách dùng:** mỗi slide có bốn mục.
 
@@ -124,7 +124,7 @@ Mọi con số trong tài liệu lấy từ lần chạy notebook với `random_
 - Chỉ lấy thông tin công khai, không đăng nhập, **không lấy thông tin liên hệ** người bán. Trong ảnh, tên người bán và số điện thoại đã được làm mờ.
 - Có cơ chế **chạy tiếp**: nếu bị ngắt giữa chừng, chạy lại sẽ bỏ qua những link đã lấy.
 
-**Khung xanh nói gì?** Trang tin còn có "Số đời chủ", "Còn hạn đăng kiểm", "Có phụ kiện đi kèm", nhưng code chưa lấy những mục này. Đây là các thông tin ảnh hưởng đến giá, nên được nêu ở phần **hạn chế** và **hướng phát triển** (slide 35).
+**Khung xanh nói gì?** Trang tin còn có "Số đời chủ", "Còn hạn đăng kiểm", "Có phụ kiện đi kèm", nhưng code chưa lấy những mục này. Đây là các thông tin ảnh hưởng đến giá, nên được nêu ở phần **hạn chế** và **hướng phát triển** (slide 36).
 
 **Câu nói gợi ý:** "Chương trình duyệt 750 trang danh sách để lấy link từng tin, sau đó vào từng tin đọc các thẻ HTML có thuộc tính itemprop, như khung cam là thẻ chứa số km. Tổng cộng 14.835 tin, thu thập ngày 25/10/2026. Nhóm có nghỉ giữa các yêu cầu và không lấy thông tin liên hệ của người bán."
 
@@ -154,48 +154,108 @@ Mọi con số trong tài liệu lấy từ lần chạy notebook với `random_
 
 ---
 
-## Slide 7 – Cách dữ liệu được tạo ra quyết định cách xử lý
+## Slide 7 – Dữ liệu thô: thiếu tập trung ở 4 cột không bắt buộc
 
-**Mục đích:** cho thấy mỗi quyết định làm sạch đều có lý do, xuất phát từ cách dữ liệu được sinh ra.
+**Mục đích:** cho thấy dữ liệu thô thiếu ở đâu, thiếu bao nhiêu, và thiếu có ngẫu nhiên không. Đây là căn cứ cho cách điền thiếu ở slide 14.
 
-**Trên slide có gì:** bảng 7 dòng: Cơ chế → Hệ quả → Cách xử lý.
+**Trên slide có gì:**
+- **Hình trái (`v01`):** mỗi thanh ngang là % số tin bị thiếu của một trong **13 đặc trưng**, tính trên 14.835 tin thô. Màu thanh cho biết **nguồn thiếu**:
+  - xanh đậm: `N/A`, tức code crawl không tìm thấy thẻ (người bán bỏ trống, hoặc trang không có ô đó);
+  - cam: `Đang cập nhật`, chữ trang tự hiện khi người bán không chọn xuất xứ;
+  - xanh nhạt: `Khác` ở số chỗ (không đổi ra số được nên coi là thiếu).
+- **Hình phải (`v03`):** tỉ lệ thiếu của 4 cột, tách riêng **xe mới** (cam) và **xe đã dùng** (xanh).
+- **Ba thẻ:** 40,5% xuất xứ thiếu; 100% xe mới thiếu số km; 37% số tin đủ mọi ô.
 
-**Giải thích chi tiết từng dòng:**
+**Giải thích chi tiết:**
 
-| Cơ chế | Giải thích | Xử lý |
+*Hình trái – thiếu ở đâu:*
+
+| Cột | Thiếu | Nguồn |
 |---|---|---|
-| Không tìm thấy thẻ → ghi "N/A" | Code crawl ghi chữ "N/A" khi trang không có ô đó, tức người bán bỏ trống. Đây là **thiếu thật**. | Đổi về giá trị thiếu (NaN). Đọc file với `keep_default_na=False` để tự kiểm soát việc đổi này. |
-| "Đang cập nhật" ở xuất xứ | Trang tự hiện chữ này khi người bán không chọn xuất xứ. Cũng là thiếu thật. | Đổi về NaN. |
-| "Khác", "Dòng khác" | Menu có sẵn mục "Khác", người bán **chủ động chọn**. Đây là **thông tin thật**, không phải thiếu. | Giữ làm nhãn. Riêng "Khác" ở số chỗ không đổi ra số được nên coi là thiếu. |
-| Số km, giá là ô gõ tự do | Nguồn lỗi chính. | Luật kiểm tra ở phần 3 (slide 11-12). |
-| Trang xe "Mới" không có ô km | Mọi xe mới đều thiếu km, nhưng giá trị đúng là 0. | Điền 0 km. |
-| Bảo hành giống nhau ở mọi tin | Nhiều khả năng là giá trị mặc định của trang. | Bỏ cột. |
-| Một lần crawl, 750 trang mới nhất | Dữ liệu là "ảnh chụp" thị trường tại một thời điểm; giá là giá rao. | Tuổi xe tính theo năm 2026; nêu ở hạn chế. |
+| Xuất xứ | 40,5% (6.012 tin) | toàn bộ là `Đang cập nhật` |
+| Kiểu dáng | 32,9% (4.883 tin) | `N/A` |
+| Số chỗ | 24,9% (3.687 tin) | 3.028 `N/A` + 659 `Khác` |
+| Số km | 12,2% (1.811 tin) | `N/A` |
+| Giá | 1 tin | `N/A` → xóa dòng |
+| 8 cột còn lại (hãng, dòng, năm, hộp số, nhiên liệu, tình trạng, bảo hành, url) | 0 | đầy đủ |
 
-**Ý quan trọng:** nếu để nguyên chữ "Đang cập nhật", mô hình sẽ coi nó là một **xuất xứ thật** (giống "Nhật Bản", "Thái Lan"). Đó là lý do phải đổi về thiếu.
+- Bốn cột thiếu nhiều đều là ô **không bắt buộc** khi đăng tin, người bán hay bỏ qua. Các cột bắt buộc thì đầy đủ.
+- Vẽ cả các cột 0% để thấy bức tranh đầy đủ: vấn đề thiếu chỉ nằm ở 4 cột, không lan khắp dữ liệu.
 
-**Câu nói gợi ý:** "Hiểu cách code crawl sinh ra dữ liệu giúp phân biệt đâu là thiếu thật, đâu là lựa chọn thật. Ví dụ N/A là người bán bỏ trống nên là thiếu, còn 'Khác' là người bán chủ động chọn nên phải giữ."
+*Hình phải – thiếu có ngẫu nhiên không:*
+
+| Cột | Xe mới | Xe đã dùng | Nhận xét |
+|---|---|---|---|
+| Số km | **100%** | 1,8% | trang xe mới không có ô số km → **thiếu có cấu trúc** |
+| Xuất xứ | 6,2% | 44,6% | tin xe mới thường do đại lý đăng, khai đầy đủ hơn |
+| Số chỗ | 2,4% | 27,5% | như trên |
+| Kiểu dáng | 25,3% | 33,8% | thiếu ở cả hai nhóm |
+
+- Nếu thiếu là ngẫu nhiên, tỉ lệ thiếu ở hai nhóm sẽ gần nhau. Ở đây chênh lệch rất lớn, nên thiếu **phụ thuộc vào loại xe**. Cách điền phải tính đến điều này.
+- Ví dụ quan trọng nhất: nếu điền số km bằng trung vị (≈ 67.000 km), mọi xe mới sẽ thành "xe đã chạy 67.000 km". Đúng bản chất phải là **0 km**.
+
+*Ba thẻ:*
+- **40,5%:** xuất xứ thiếu quá nhiều, lại không suy được từ dòng xe (cùng một dòng có thể nhập khẩu hoặc lắp ráp) → giữ nhãn riêng "Không rõ".
+- **100%:** xe mới thiếu số km toàn bộ, xe cũ chỉ 1,8% → điền 0 km cho xe mới, trung vị theo đời xe cho xe cũ.
+- **37%:** chỉ 37% số tin đầy đủ mọi ô (theo ma trận thiếu `v02`). Nếu xóa mọi tin có ô thiếu thì mất gần 2/3 dữ liệu → phải **điền**, không xóa dòng.
+
+*Ghi chú về con số:* slide này tính trên dữ liệu thô 14.835 tin (40,5%); slide 14 tính sau khi bỏ tin trùng nên ra 41,5%. Hai số khác nhau vì mẫu số khác nhau. Ngoài ra kiểu dáng, số chỗ, xuất xứ thường **thiếu cùng lúc** (13% số tin thiếu cả ba), vì người bán bỏ qua cả nhóm ô không bắt buộc.
+
+**Câu nói gợi ý:** "Trên 13 đặc trưng, chỉ 4 cột không bắt buộc bị thiếu nhiều, còn lại đầy đủ. Khi tách theo tình trạng xe, số km thiếu 100% ở xe mới nhưng chỉ 1,8% ở xe cũ: đây là thiếu có cấu trúc, nên xe mới được điền 0 km. Và vì chỉ 37% số tin đủ mọi ô, nhóm chọn điền thiếu thay vì xóa dòng."
+
+**Câu hỏi có thể gặp:**
+- *"Sao không xóa các dòng thiếu cho đơn giản?"* → Chỉ 37% số tin đầy đủ; xóa sẽ mất gần 2/3 dữ liệu và làm lệch mẫu (xe cũ hay thiếu xuất xứ hơn xe mới).
+- *"`Khác` ở số chỗ sao lại tính là thiếu, còn `Dòng khác` thì không?"* → `Khác` ở số chỗ không đổi ra con số được nên vô dụng như một số; còn `Dòng khác` là lựa chọn thật của người bán, mang thông tin, nên giữ làm nhãn.
 
 ---
 
-## Slide 8 – Dữ liệu thô: thiếu nhiều ở các cột không bắt buộc
+## Slide 8 – Kiểu dáng, số chỗ, xuất xứ: lệch mạnh và thiếu nhiều
 
-**Mục đích:** cho thấy tình trạng dữ liệu thô trước khi làm sạch.
+**Mục đích:** xem phân bố của ba cột không bắt buộc (cũng là ba cột thiếu nhiều nhất), để thấy (1) dữ liệu lệch về vài giá trị phổ biến và (2) phần thiếu lớn đến mức nào so với các giá trị thật.
 
 **Trên slide có gì:**
-- **Hình trái:** biểu đồ thanh ngang, mỗi thanh là tỉ lệ % giá trị thiếu của một cột: xuất xứ 40,5%, kiểu dáng 32,9%, số chỗ 24,9%, số km 12,2%, các cột khác gần 0%.
-- **Hình phải:** cơ cấu dữ liệu theo tình trạng, nhiên liệu, hộp số.
-- **Ba thẻ:** 41% thiếu xuất xứ; 100% xe mới thiếu km; 67% tin ở TP.HCM và Hà Nội.
+- **Hình (`v04`):** ba biểu đồ thanh ngang cạnh nhau. Mỗi thanh là **% số tin** (trên 14.835 tin thô) của một giá trị; các thanh xanh cộng với thanh xám **bằng 100%**. **Thanh xám** ở cuối là phần thiếu (người bán không khai).
+- **Ba thẻ bên phải:** Lệch mạnh / Thiếu là nhóm lớn / Hướng xử lý.
 
 **Giải thích chi tiết:**
-- **Vì sao thiếu nhiều ở xuất xứ, kiểu dáng, số chỗ?** Đây là các ô **không bắt buộc** khi đăng tin, người bán thường bỏ qua.
-- **"100% xe mới thiếu km"** không phải lỗi ngẫu nhiên: trang tin xe mới không có ô số km. Loại thiếu có nguyên nhân rõ ràng như vậy gọi là **thiếu có cấu trúc**. Hiểu được điều này quyết định cách điền (slide 13).
-- **Cơ cấu (hình phải):** phần lớn là xe đã sử dụng, số tự động, chạy xăng. Xe hybrid và xe bán tự động rất ít. Đây cũng là một dạng mất cân bằng ở đặc trưng.
-- **67% ở TP.HCM và Hà Nội:** dữ liệu tập trung ở hai thành phố lớn.
 
-*Ghi chú về con số:* hình trái tính trên dữ liệu thô (40,5%); slide 13 tính sau khi bỏ tin trùng nên ra 41,5%. Hai con số khác nhau một chút vì mẫu số khác nhau.
+*Kiểu dáng:*
 
-**Câu nói gợi ý:** "Dữ liệu thô thiếu nhiều ở các cột không bắt buộc như xuất xứ, kiểu dáng, số chỗ. Riêng số km thiếu ở toàn bộ xe mới, vì trang xe mới không có ô số km. Đây là thiếu có cấu trúc và sẽ được xử lý khác."
+| Giá trị | % tin |
+|---|---|
+| SUV / Cross over | 27,5% |
+| Sedan | 16,2% |
+| Minivan (MPV) | 8,4% |
+| Pick-up (bán tải) | 5,4% |
+| Hatchback | 5,1% |
+| Van | 3,0% |
+| Kiểu dáng khác | 1,0% |
+| Coupe (2 cửa) / Mui trần | 0,3% / 0,2% |
+| **Thiếu** | **32,9%** |
+
+- SUV và Sedan chiếm khoảng 44% số tin, hợp với thị trường Việt Nam (xe gia đình, xe đô thị).
+- Coupe, Mui trần chỉ vài chục tin: mô hình có rất ít ví dụ để học giá của kiểu dáng này.
+
+*Số chỗ:*
+- **5 chỗ 40,7%** và **7 chỗ 22,5%**, cộng lại khoảng 63%. Các số chỗ khác đều dưới 4%: 2 chỗ (xe thể thao), 4 chỗ (xe nhỏ, bán tải cabin đơn), 8 chỗ (xe gia đình lớn), 16 chỗ (xe khách).
+- Thiếu 24,9%. Vì đa số là 5 hoặc 7 chỗ, nếu điền sai thì thường chỉ lệch 5 ↔ 7, sai lệch nhỏ.
+
+*Xuất xứ:*
+- **Thiếu 40,5%** là nhóm lớn nhất, lớn hơn cả Việt Nam (lắp ráp trong nước, 28,8%).
+- "Nước khác" (9,5%) là lựa chọn có sẵn trong danh sách, người bán chủ động chọn → nhãn thật, giữ nguyên.
+- Thái Lan 7,8% (xe nhập khẩu từ ASEAN như Fortuner, Ranger), Nhật Bản, Hàn Quốc, Đức… đều nhỏ.
+
+*Hai kết luận:*
+1. **Mất cân bằng ở đặc trưng:** giống tình trạng / nhiên liệu / hộp số, mỗi cột có vài giá trị áp đảo và nhiều giá trị hiếm dưới 1%. Đây là dạng mất cân bằng thứ hai, bên cạnh mất cân bằng theo phân khúc giá (slide 16).
+2. **Không thể bỏ qua phần thiếu:** thanh xám lớn hơn hầu hết các thanh xanh. Hướng xử lý (slide 14):
+   - **Kiểu dáng, số chỗ:** do dòng xe quyết định (Vios luôn là Sedan 5 chỗ) → điền giá trị phổ biến nhất của cùng dòng xe.
+   - **Xuất xứ:** không suy được từ dòng xe (cùng một dòng có thể nhập khẩu hoặc lắp ráp) → nhãn riêng "Không rõ".
+
+**Câu nói gợi ý:** "Ba cột không bắt buộc đều lệch mạnh: SUV và Sedan gần một nửa, 5 và 7 chỗ gần hai phần ba. Phần thiếu, thanh xám, còn lớn hơn hầu hết các giá trị thật, xuất xứ thiếu 40%, nhiều hơn cả xe lắp ráp trong nước. Kiểu dáng và số chỗ sẽ được điền theo dòng xe, còn xuất xứ giữ nhãn Không rõ."
+
+**Câu hỏi có thể gặp:**
+- *"Giá trị hiếm như Mui trần, 12 chỗ có gộp lại không?"* → Không. Các cột này chỉ có khoảng 10 giá trị nên one-hot không sinh nhiều cột; gộp nhãn hiếm chỉ cần cho hãng và dòng xe (hàng trăm giá trị).
+- *"Tại sao không điền xuất xứ theo hãng (Toyota → Việt Nam)?"* → Cùng hãng, thậm chí cùng dòng, có xe lắp ráp và xe nhập khẩu (Fortuner từng có cả hai). Đoán sai sẽ đưa thông tin bịa vào dữ liệu; nhãn "Không rõ" trung thực hơn và mô hình tự học được ý nghĩa của nó.
 
 ---
 
@@ -223,9 +283,33 @@ Mọi con số trong tài liệu lấy từ lần chạy notebook với `random_
 
 ---
 
-# PHẦN 3. TIỀN XỬ LÝ DỮ LIỆU (slide 10-15)
+# PHẦN 3. TIỀN XỬ LÝ DỮ LIỆU (slide 10-16)
 
-## Slide 10 – Chuẩn hóa giá trị giả, trích vị trí, loại tin trùng
+## Slide 10 – Cách dữ liệu được tạo ra quyết định cách xử lý
+
+**Mục đích:** mở đầu phần tiền xử lý: cho thấy mỗi quyết định làm sạch đều có lý do, xuất phát từ cách dữ liệu được sinh ra. Slide này là "bản đồ" cho các slide 11-16: mỗi dòng trong bảng được xử lý cụ thể ở một slide phía sau.
+
+**Trên slide có gì:** bảng 7 dòng: Cơ chế → Hệ quả → Cách xử lý.
+
+**Giải thích chi tiết từng dòng:**
+
+| Cơ chế | Giải thích | Xử lý |
+|---|---|---|
+| Không tìm thấy thẻ → ghi "N/A" | Code crawl ghi chữ "N/A" khi trang không có ô đó, tức người bán bỏ trống. Đây là **thiếu thật**. | Đổi về giá trị thiếu (NaN). Đọc file với `keep_default_na=False` để tự kiểm soát việc đổi này. |
+| "Đang cập nhật" ở xuất xứ | Trang tự hiện chữ này khi người bán không chọn xuất xứ. Cũng là thiếu thật. | Đổi về NaN. |
+| "Khác", "Dòng khác" | Menu có sẵn mục "Khác", người bán **chủ động chọn**. Đây là **thông tin thật**, không phải thiếu. | Giữ làm nhãn. Riêng "Khác" ở số chỗ không đổi ra số được nên coi là thiếu. |
+| Số km, giá là ô gõ tự do | Nguồn lỗi chính. | Luật kiểm tra ở slide 12-13. |
+| Trang xe "Mới" không có ô km | Mọi xe mới đều thiếu km, nhưng giá trị đúng là 0. | Điền 0 km. |
+| Bảo hành giống nhau ở mọi tin | Nhiều khả năng là giá trị mặc định của trang. | Bỏ cột. |
+| Một lần crawl, 750 trang mới nhất | Dữ liệu là "ảnh chụp" thị trường tại một thời điểm; giá là giá rao. | Tuổi xe tính theo năm 2026; nêu ở hạn chế. |
+
+**Ý quan trọng:** nếu để nguyên chữ "Đang cập nhật", mô hình sẽ coi nó là một **xuất xứ thật** (giống "Nhật Bản", "Thái Lan"). Đó là lý do phải đổi về thiếu.
+
+**Câu nói gợi ý:** "Hiểu cách code crawl sinh ra dữ liệu giúp phân biệt đâu là thiếu thật, đâu là lựa chọn thật. Ví dụ N/A là người bán bỏ trống nên là thiếu, còn 'Khác' là người bán chủ động chọn nên phải giữ."
+
+---
+
+## Slide 11 – Chuẩn hóa giá trị giả, trích vị trí, loại tin trùng
 
 **Mục đích:** các bước làm sạch đầu tiên, đưa dữ liệu về đúng kiểu.
 
@@ -234,7 +318,7 @@ Mọi con số trong tài liệu lấy từ lần chạy notebook với `random_
 **Giải thích chi tiết:**
 
 **Thẻ 1 – Giá trị giả:**
-- "N/A", "Đang cập nhật" → giá trị thiếu thật (lý do ở slide 7).
+- "N/A", "Đang cập nhật" → giá trị thiếu thật (lý do ở slide 10).
 - Số được lưu dạng chuỗi có dấu chấm ngăn cách hàng nghìn: "109.366" → số 109366; "1.095.000.000" → 1095000000. Nếu để máy tự đọc, "79.000" sẽ bị hiểu nhầm là 79,0.
 - Năm "trước năm 1980" (12 tin) → gán 1979 để vẫn dùng được như số.
 
@@ -253,7 +337,7 @@ Mọi con số trong tài liệu lấy từ lần chạy notebook với `random_
 
 ---
 
-## Slide 11 – Phát hiện giá trị bất hợp lý
+## Slide 12 – Phát hiện giá trị bất hợp lý
 
 **Mục đích:** loại hoặc sửa các giá trị không thể xảy ra trong thực tế.
 
@@ -279,7 +363,7 @@ Vì vậy không dùng cách cắt máy móc như "bỏ 1% giá cao nhất", mà
 | > 100.000 km/năm → coi là thiếu (25) | Xe 1 tuổi chạy 480.000 km | Xe dịch vụ chạy nhiều cũng chỉ 80.000-100.000 km/năm |
 
 - Với **giá** sai: loại cả dòng, vì giá là đáp án, không được đoán bừa.
-- Với **số km** sai: chỉ chuyển ô đó thành thiếu rồi điền lại ở bước sau (slide 13), giữ lại dòng.
+- Với **số km** sai: chỉ chuyển ô đó thành thiếu rồi điền lại ở bước sau (slide 14), giữ lại dòng.
 - **Làm trước khi điền thiếu**, để giá trị điền không bị tính từ số liệu sai.
 - Sau bước này còn **14.066 tin**.
 
@@ -289,7 +373,7 @@ Vì vậy không dùng cách cắt máy móc như "bỏ 1% giá cao nhất", mà
 
 ---
 
-## Slide 12 – Giá trả trước / đặt cọc
+## Slide 13 – Giá trả trước / đặt cọc
 
 **Mục đích:** xử lý loại lỗi nguy hiểm nhất: nhãn sai nằm đúng ở biến cần dự đoán.
 
@@ -306,7 +390,7 @@ Vì vậy không dùng cách cắt máy móc như "bỏ 1% giá cao nhất", mà
 - Lúc học, mô hình bị dạy sai.
 - Lúc chấm, mô hình đoán đúng giá xe (khoảng 1,2 tỷ) nhưng bị chấm là **sai gần 900%** vì đáp án ghi 125 triệu.
 
-**Vì sao không dùng một ngưỡng cố định?** 100 triệu là giá hợp lý cho xe 20 năm tuổi, nhưng vô lý cho xe 1 năm tuổi. Ngưỡng 20 triệu ở slide 11 không bắt được trường hợp này.
+**Vì sao không dùng một ngưỡng cố định?** 100 triệu là giá hợp lý cho xe 20 năm tuổi, nhưng vô lý cho xe 1 năm tuổi. Ngưỡng 20 triệu ở slide 12 không bắt được trường hợp này.
 
 **Giải pháp: so với chính mẫu xe đó.**
 1. Gom các xe **cùng hãng, cùng dòng, cùng năm sản xuất**.
@@ -324,11 +408,11 @@ Sau bước này còn **13.937 tin**.
 
 **Câu hỏi có thể gặp:**
 - *"Dùng giá để lọc có phải rò rỉ dữ liệu không?"* → "Không, vì đây là sửa nhãn sai: chỉ loại dòng có đáp án sai, không đưa thông tin giá vào đặc trưng. Tuy vậy khi dùng thật, mô hình vẫn sẽ gặp các tin như vậy, nhóm đã nêu ở hạn chế."
-- *"Luật này có bắt hết không?"* → "Không. Nhóm có dưới 3 xe thì không áp dụng được, nên vẫn còn sót. Slide 33 cho thấy các xe bị đoán sai nặng nhất chính là những tin còn sót này."
+- *"Luật này có bắt hết không?"* → "Không. Nhóm có dưới 3 xe thì không áp dụng được, nên vẫn còn sót. Slide 34 cho thấy các xe bị đoán sai nặng nhất chính là những tin còn sót này."
 
 ---
 
-## Slide 13 – Xử lý giá trị thiếu
+## Slide 14 – Xử lý giá trị thiếu
 
 **Mục đích:** điền giá trị thiếu theo đúng nguyên nhân thiếu.
 
@@ -347,7 +431,7 @@ Sau bước này còn **13.937 tin**.
 
 **Số km:**
 - **Xe mới (1.235 xe):** thiếu vì trang không có ô km. Giá trị đúng là **0**. Nếu điền trung vị (khoảng 66.000 km) thì xe mới bị biến thành "xe đã chạy 66.000 km", sai hoàn toàn.
-- **Xe cũ thiếu km (814 xe, 5,8%):** gồm người bán quên điền và các giá trị bị loại ở slide 11. Điền bằng **trung vị số km của xe cùng năm sản xuất** (xe đời 2018 thường chạy khác xe đời 2010). Dùng trung vị vì số km có vài giá trị rất lớn kéo trung bình lên.
+- **Xe cũ thiếu km (814 xe, 5,8%):** gồm người bán quên điền và các giá trị bị loại ở slide 12. Điền bằng **trung vị số km của xe cùng năm sản xuất** (xe đời 2018 thường chạy khác xe đời 2010). Dùng trung vị vì số km có vài giá trị rất lớn kéo trung bình lên.
 - **Cờ `mileage_missing`:** cột mới, bằng 1 nếu số km là giá trị điền, 0 nếu người bán tự khai. Giúp mô hình **biết** dòng nào là ước lượng. Việc người bán không khai km cũng có thể là một tín hiệu về giá.
 
 **Kiểu dáng và số chỗ:** gần như do **dòng xe** quyết định (Vios luôn là sedan 5 chỗ, Fortuner luôn là SUV 7 chỗ). Nên điền bằng giá trị phổ biến nhất (mode) của xe cùng hãng và dòng.
@@ -362,7 +446,7 @@ Sau bước này còn **13.937 tin**.
 
 ---
 
-## Slide 14 – Học trên log(giá) và gộp nhãn hiếm theo cấp
+## Slide 15 – Học trên log(giá) và gộp nhãn hiếm theo cấp
 
 **Mục đích:** hai biến đổi quan trọng: biến đổi biến mục tiêu và giảm số nhãn hiếm.
 
@@ -385,7 +469,7 @@ Sau bước này còn **13.937 tin**.
   
   hai cặp này cách nhau **bằng nhau** trên thang log. Nghĩa là mô hình bị phạt theo **sai số phần trăm**, khớp với thước đo chính MAPE.
 - Mô hình học `ln(giá)`, dự đoán xong dùng `exp()` để đổi về triệu đồng. **Mọi thước đo đều tính trên giá thật.**
-- Lựa chọn này được kiểm chứng ở slide 32: MAPE 16,2% (log) so với 19,6% (giá gốc).
+- Lựa chọn này được kiểm chứng ở slide 33: MAPE 16,2% (log) so với 19,6% (giá gốc).
 
 **B. Gộp nhãn hiếm theo cấp**
 
@@ -407,7 +491,7 @@ Sau bước này còn **13.937 tin**.
 
 ---
 
-## Slide 15 – Mất cân bằng theo phân khúc giá; còn 13.937 tin sạch
+## Slide 16 – Mất cân bằng theo phân khúc giá; còn 13.937 tin sạch
 
 **Mục đích:** định lượng mất cân bằng và tổng kết phần làm sạch.
 
@@ -426,10 +510,10 @@ Sau bước này còn **13.937 tin**.
 - 5 phân khúc **chỉ dùng để phân tích, chia mẫu và đánh giá**, không làm đặc trưng (vì được tạo từ giá, tức đáp án).
 
 **Cách xử lý (thẻ trái):**
-1. Chia train/test **phân tầng** theo phân khúc (slide 16).
+1. Chia train/test **phân tầng** theo phân khúc (slide 17).
 2. Học trên **log giá** (giảm ảnh hưởng của đuôi phải).
 3. Luôn báo **MAPE theo từng phân khúc**, không chỉ một con số trung bình.
-4. Thử **trọng số mẫu, oversampling, undersampling** bằng CV (slide 32).
+4. Thử **trọng số mẫu, oversampling, undersampling** bằng CV (slide 33).
 
 **Phễu (hình phải):** giữ lại **93,9%** dữ liệu. Mỗi bước loại đều có lý do cụ thể ở các slide trước. Các bước khác (sửa nhãn "Mới", chuyển km vô lý thành thiếu, điền thiếu, gộp nhãn) **không làm giảm số dòng**.
 
@@ -439,9 +523,9 @@ Sau bước này còn **13.937 tin**.
 
 ---
 
-# PHẦN 4. MÔ HÌNH RANDOM FOREST (slide 16-25)
+# PHẦN 4. MÔ HÌNH RANDOM FOREST (slide 17-26)
 
-## Slide 16 – Thiết kế thí nghiệm
+## Slide 17 – Thiết kế thí nghiệm
 
 **Mục đích:** cách chia dữ liệu và chọn tham số một cách khách quan.
 
@@ -464,7 +548,7 @@ Sau bước này còn **13.937 tin**.
   3. Lấy trung bình 5 điểm.
   
   Mọi xe trong train đều được dùng làm validation đúng một lần, nên kết quả ổn định hơn.
-- Bản tự viết dùng **OOB** thay cho CV (giải thích ở slide 20), vì chạy chậm.
+- Bản tự viết dùng **OOB** thay cho CV (giải thích ở slide 21), vì chạy chậm.
 
 **Câu nói gợi ý:** "Dữ liệu chia 80/20, phân tầng theo phân khúc giá để tập test có đủ xe sang. Tham số được chọn bằng cross-validation trên tập train; tập test chỉ dùng một lần ở cuối."
 
@@ -473,7 +557,7 @@ Sau bước này còn **13.937 tin**.
 
 ---
 
-## Slide 17 – Thước đo đánh giá
+## Slide 18 – Thước đo đánh giá
 
 **Mục đích:** giải thích từng chỉ số, chỉ số nào cần cao, cần thấp, thế nào là tốt.
 
@@ -519,7 +603,7 @@ Ngoài ra luôn báo **MAPE theo 5 phân khúc giá**, vì một con số trung 
 
 ---
 
-## Slide 18 – One-hot hay mã số thứ tự?
+## Slide 19 – One-hot hay mã số thứ tự?
 
 **Mục đích:** chọn cách đổi biến phân loại thành số cho rừng, có kiểm chứng.
 
@@ -542,7 +626,7 @@ Ngoài ra luôn báo **MAPE theo 5 phân khúc giá**, vì một con số trung 
 
 **Vì sao thử nhiều mức `max_features` cho mã số?** `max_features` là tỉ lệ đặc trưng xét ở mỗi lần chia. Với 12 cột, mức 0,33 nghĩa là mỗi nút chỉ xét 4 cột, có thể không xét tuổi xe, nên kém nhất (18,3%). Thử thêm 0,6 và 1,0 để so sánh công bằng; vẫn thua one-hot.
 
-**Kết quả:** one-hot thấp nhất ở cả MAPE tổng (16,4%) và xe trên 2 tỷ (28,9% so với 29-39%). One-hot cũng hợp với bản tự cài đặt: cột 0/1 chỉ có 2 giá trị, không mất thông tin khi chia bin (slide 22).
+**Kết quả:** one-hot thấp nhất ở cả MAPE tổng (16,4%) và xe trên 2 tỷ (28,9% so với 29-39%). One-hot cũng hợp với bản tự cài đặt: cột 0/1 chỉ có 2 giá trị, không mất thông tin khi chia bin (slide 23).
 
 **Thẻ phải – vì sao rừng không cần biến đổi số?** Cây chỉ hỏi "tuổi ≤ 5?". Hỏi "tuổi² ≤ 25?" hay "log(tuổi) ≤ log 5?" cho **đúng cùng một phép chia**. Nên với cây, `age²`, `log(km)` không thêm thông tin, chỉ làm độ quan trọng bị chia đôi. Cây cũng không phụ thuộc thang đo, nên không cần chuẩn hóa.
 
@@ -550,7 +634,7 @@ Ngoài ra luôn báo **MAPE theo 5 phân khúc giá**, vì một con số trung 
 
 ---
 
-## Slide 19 – Cây hồi quy CART
+## Slide 20 – Cây hồi quy CART
 
 **Mục đích:** giải thích thành phần cơ bản của rừng bằng một cây thật.
 
@@ -584,7 +668,7 @@ Gốc: 11.149 xe, giá đại diện ~437 triệu
     └── CÓ    → Tuổi ≤ 20,5? → CÓ: ~121 triệu (492 xe); KHÔNG: ~73 triệu (322 xe)
 ```
 
-- Câu hỏi đầu tiên **do cây tự chọn** là tuổi xe, vì đó là câu tách giá tốt nhất. Điều này khớp với kết quả độ quan trọng ở slide 30.
+- Câu hỏi đầu tiên **do cây tự chọn** là tuổi xe, vì đó là câu tách giá tốt nhất. Điều này khớp với kết quả độ quan trọng ở slide 31.
 - Chỉ với 3 tầng, cây đã tách nhóm **~617 triệu** (xe mới hơn 13,5 năm, số tự động, không phải hatchback) khỏi nhóm **~73 triệu** (xe trên 20 năm, số sàn).
 - **Giá đại diện** ở mỗi ô = `exp(trung bình log giá)` của các xe trong ô.
 - Ở lá, giá dự đoán cho một xe mới là giá đại diện của lá mà xe đó rơi vào.
@@ -602,7 +686,7 @@ gain = S_L² / n_L  +  S_R² / n_R  −  S² / n
 **Điểm yếu của một cây:**
 - **Độ chệch thấp:** cây sâu (cây thật trong rừng sâu tới 30 tầng, hàng nghìn nút) có thể học rất khớp dữ liệu train.
 - **Phương sai cao:** đổi vài mẫu là cấu trúc cây thay đổi hẳn. Nói cách khác, cây **học thuộc** dữ liệu train, dự đoán dữ liệu mới không ổn định.
-- → Cần **lấy trung bình nhiều cây** (slide 20).
+- → Cần **lấy trung bình nhiều cây** (slide 21).
 
 **Câu nói gợi ý:** "Đây là một cây thật học từ dữ liệu, giới hạn 3 tầng để dễ nhìn. Câu hỏi đầu tiên cây tự chọn là tuổi xe. Ở mỗi nút, cây chọn câu hỏi làm giảm sai số nhiều nhất theo công thức gain. Điểm yếu là một cây sâu học thuộc dữ liệu, nên cần lấy trung bình nhiều cây."
 
@@ -611,7 +695,7 @@ gain = S_L² / n_L  +  S_R² / n_R  −  S² / n
 
 ---
 
-## Slide 20 – Random Forest: lấy trung bình nhiều cây khác nhau
+## Slide 21 – Random Forest: lấy trung bình nhiều cây khác nhau
 
 **Mục đích:** giải thích cách rừng khắc phục điểm yếu của một cây.
 
@@ -653,7 +737,7 @@ gain = S_L² / n_L  +  S_R² / n_R  −  S² / n
 
 ---
 
-## Slide 21 – Random Forest thư viện: tinh chỉnh bằng CV
+## Slide 22 – Random Forest thư viện: tinh chỉnh bằng CV
 
 **Mục đích:** cách chọn tham số cho bản thư viện và kết quả.
 
@@ -686,7 +770,7 @@ gain = S_L² / n_L  +  S_R² / n_R  −  S² / n
 
 ---
 
-## Slide 22 – Random Forest tự cài đặt bằng NumPy
+## Slide 23 – Random Forest tự cài đặt bằng NumPy
 
 **Mục đích:** giải thích cấu trúc code tự viết và kỹ thuật tăng tốc.
 
@@ -721,11 +805,11 @@ Thay vì thử từng ngưỡng bằng vòng lặp Python, tất cả được t
 **Câu nói gợi ý:** "Bản tự cài đặt gồm ba lớp. Để chạy đủ nhanh bằng Python, nhóm dùng kỹ thuật histogram như LightGBM: chia mỗi đặc trưng thành 32 ngăn một lần, rồi ở mỗi nút chỉ cần đếm bằng bincount và cộng dồn bằng cumsum là có gain của mọi ngưỡng cùng lúc."
 
 **Câu hỏi có thể gặp:**
-- *"Vì sao chia 32 bin không mất nhiều thông tin?"* → "Cột one-hot chỉ có 2 giá trị nên không mất gì. Cột số chia theo phân vị nên mỗi ngăn có số xe gần bằng nhau; các ngưỡng tốt nhất thường vẫn nằm gần ranh giới ngăn. Kết quả kiểm chứng ở slide 23 cho thấy chênh lệch rất nhỏ."
+- *"Vì sao chia 32 bin không mất nhiều thông tin?"* → "Cột one-hot chỉ có 2 giá trị nên không mất gì. Cột số chia theo phân vị nên mỗi ngăn có số xe gần bằng nhau; các ngưỡng tốt nhất thường vẫn nằm gần ranh giới ngăn. Kết quả kiểm chứng ở slide 24 cho thấy chênh lệch rất nhỏ."
 
 ---
 
-## Slide 23 – Kiểm chứng: một cây và cả rừng trùng khớp thư viện
+## Slide 24 – Kiểm chứng: một cây và cả rừng trùng khớp thư viện
 
 **Mục đích:** chứng minh code tự viết đúng.
 
@@ -742,7 +826,7 @@ Thay vì thử từng ngưỡng bằng vòng lặp Python, tất cả được t
 
 → Lớp cây tự viết **đúng**.
 
-Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² test chỉ 0,84-0,85**. Một cây khớp dữ liệu train tốt hơn hẳn dữ liệu mới, đó là dấu hiệu **học thuộc (phương sai cao)**, đúng như lý thuyết ở slide 19.
+Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² test chỉ 0,84-0,85**. Một cây khớp dữ liệu train tốt hơn hẳn dữ liệu mới, đó là dấu hiệu **học thuộc (phương sai cao)**, đúng như lý thuyết ở slide 20.
 
 **Bước 2 – Kiểm chứng cả rừng trên từng xe.**
 - Không chỉ so con số trung bình (MAPE), mà so **dự đoán trên từng xe** trong tập test.
@@ -761,7 +845,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 24 – Từ một cây đến một rừng
+## Slide 25 – Từ một cây đến một rừng
 
 **Mục đích:** cho thấy trực quan lợi ích của việc lấy trung bình nhiều cây.
 
@@ -792,7 +876,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 25 – Ridge Regression: mốc so sánh tuyến tính
+## Slide 26 – Ridge Regression: mốc so sánh tuyến tính
 
 **Mục đích:** giới thiệu mô hình so sánh và lý do chọn nó.
 
@@ -827,9 +911,9 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-# PHẦN 5. KẾT QUẢ VÀ KẾT LUẬN (slide 26-35)
+# PHẦN 5. KẾT QUẢ VÀ KẾT LUẬN (slide 27-36)
 
-## Slide 26 – Kết quả tổng thể trên tập test
+## Slide 27 – Kết quả tổng thể trên tập test
 
 **Mục đích:** con số chính của đề tài.
 
@@ -850,7 +934,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 **Đọc từng chỉ số của Random Forest:**
 - **MAPE 15,5%:** trung bình mỗi xe bị đoán lệch 15,5%. Theo thang tham khảo, 10-20% là **mức tốt**. Giảm từ 83,5% của baseline.
-- **MedAPE 9,0%:** một xe "điển hình" chỉ lệch 9%. Thấp hơn MAPE nhiều, nghĩa là **đa số xe đoán tốt**, chỉ một nhóm nhỏ bị sai rất nặng kéo trung bình lên (chủ yếu xe rất rẻ và xe sang, xem slide 27, 33).
+- **MedAPE 9,0%:** một xe "điển hình" chỉ lệch 9%. Thấp hơn MAPE nhiều, nghĩa là **đa số xe đoán tốt**, chỉ một nhóm nhỏ bị sai rất nặng kéo trung bình lên (chủ yếu xe rất rẻ và xe sang, xem slide 28, 34).
 - **MAE 102 triệu:** trung bình lệch khoảng 102 triệu đồng.
 - **RMSE 372 triệu, gấp khoảng 3,6 lần MAE:** vì RMSE phóng đại lỗi lớn, tỉ lệ này cho thấy có **một số xe bị đoán sai hàng tỷ đồng**, chủ yếu là xe sang.
 - **R² (log) 0,891:** mô hình giải thích khoảng 89% biến động của log giá. 11% còn lại đến từ những gì dữ liệu không có: phiên bản, trang bị, tình trạng thực tế, thương lượng.
@@ -864,7 +948,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 27 – Sai số theo phân khúc giá
+## Slide 28 – Sai số theo phân khúc giá
 
 **Mục đích:** xem mô hình tốt và kém ở đâu, thay vì chỉ một con số trung bình.
 
@@ -887,7 +971,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 **Xe dưới 200 triệu: sai 35%.** Ba lý do:
 1. Giá thấp nên chênh vài chục triệu (do tình trạng thực tế, thương lượng) đã là phần trăm lớn. Xe 100 triệu đoán 135 triệu là sai 35%.
 2. Xe đời cũ rất khác nhau về tình trạng (đâm đụng, ngập nước, bảo dưỡng) mà dữ liệu không có.
-3. Vẫn còn sót tin ghi giá trả trước (slide 33).
+3. Vẫn còn sót tin ghi giá trả trước (slide 34).
 
 **Xe trên 2 tỷ: sai 27%.** Chỉ 3% dữ liệu, và giá xe sang phụ thuộc nhiều vào **phiên bản, trang bị** (cùng là Mercedes S-Class nhưng S450 và S680 chênh vài tỷ), mà dữ liệu không có.
 
@@ -897,7 +981,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 28 – Dự đoán so với giá thật
+## Slide 29 – Dự đoán so với giá thật
 
 **Mục đích:** nhìn trực quan chất lượng dự đoán trên từng xe.
 
@@ -923,7 +1007,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 29 – Chênh lệch có ý nghĩa thống kê không? (Bootstrap)
+## Slide 30 – Chênh lệch có ý nghĩa thống kê không? (Bootstrap)
 
 **Mục đích:** chứng minh RF tốt hơn Ridge là thật, không phải do may mắn.
 
@@ -967,7 +1051,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 30 – Đặc trưng nào quyết định giá? Hai cách đo
+## Slide 31 – Đặc trưng nào quyết định giá? Hai cách đo
 
 **Mục đích:** diễn giải mô hình: yếu tố nào ảnh hưởng giá nhiều nhất.
 
@@ -1019,7 +1103,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 31 – Đường khấu hao
+## Slide 32 – Đường khấu hao
 
 **Mục đích:** cho thấy cụ thể RF học được điều gì mà Ridge không học được.
 
@@ -1043,7 +1127,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 32 – Thí nghiệm log giá và xử lý mất cân bằng
+## Slide 33 – Thí nghiệm log giá và xử lý mất cân bằng
 
 **Mục đích:** kiểm chứng hai quyết định quan trọng bằng số liệu: dùng log giá, và có nên cân bằng dữ liệu không.
 
@@ -1095,7 +1179,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 33 – Hai nguồn sai lệch: tin đăng lại và nhãn sai còn sót
+## Slide 34 – Hai nguồn sai lệch: tin đăng lại và nhãn sai còn sót
 
 **Mục đích:** nêu trung thực các yếu tố làm con số đánh giá lệch, theo hai chiều.
 
@@ -1107,7 +1191,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 **Giải thích chi tiết:**
 
 **A. Tin đăng lại → con số hơi LẠC QUAN.**
-- Đã loại tin trùng **hoàn toàn** ở slide 10, nhưng cùng một xe có thể được **đăng lại với giá chênh nhẹ**, nên vẫn còn hai dòng gần giống nhau.
+- Đã loại tin trùng **hoàn toàn** ở slide 11, nhưng cùng một xe có thể được **đăng lại với giá chênh nhẹ**, nên vẫn còn hai dòng gần giống nhau.
 - Khi chia ngẫu nhiên, một bản rơi vào train, bản kia vào test. Random Forest với lá nhỏ chỉ cần "nhớ" giá của chính xe đó là đoán đúng.
 - **Kiểm tra trên test:** 391 tin test (14%) có một tin train **giống hệt mọi đặc trưng kể cả số km**. Trên nhóm này RF sai 10,9%; trên nhóm còn lại sai 16,2%.
 - **Kiểm tra bằng CV chia theo nhóm (`StratifiedGroupKFold`):** mọi tin giống hệt nhau về đặc trưng luôn nằm **cùng một phía** (cùng train hoặc cùng validation). MAPE tăng từ **16,1% lên 16,7%** (+0,5 điểm %), rõ nhất ở xe dưới 200 triệu (35,7% → 38,0%).
@@ -1123,7 +1207,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 | Mitsubishi Xforce 2025 | Đã dùng | 170 | 612 |
 | Ford Ranger 2024 | Đã dùng | 225 | 616 |
 
-- Các xe này đều **đời 2023-2026** nhưng rao chỉ 35-225 triệu. Một chiếc Accent 2026 **mới** không thể giá 90 triệu. Gần như chắc chắn đây là **giá trả trước** lọt qua luật lọc ở slide 12 (vì nhóm hãng-dòng-năm có dưới 3 xe nên không áp dụng được).
+- Các xe này đều **đời 2023-2026** nhưng rao chỉ 35-225 triệu. Một chiếc Accent 2026 **mới** không thể giá 90 triệu. Gần như chắc chắn đây là **giá trả trước** lọt qua luật lọc ở slide 13 (vì nhóm hãng-dòng-năm có dưới 3 xe nên không áp dụng được).
 - **Mô hình đoán 460-650 triệu mới là hợp lý**; chính nhãn sai.
 - Những tin này làm MAPE, nhất là phân khúc dưới 200 triệu, bị **đội lên**. Sai số thật của mô hình trên tin có giá đúng thấp hơn con số báo cáo.
 
@@ -1131,7 +1215,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 34 – Lưu mô hình và dự đoán từ thông tin thô
+## Slide 35 – Lưu mô hình và dự đoán từ thông tin thô
 
 **Mục đích:** cho thấy mô hình dùng được trong thực tế, không chỉ trong notebook.
 
@@ -1164,7 +1248,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 
 ---
 
-## Slide 35 – Kết luận, hạn chế và hướng phát triển
+## Slide 36 – Kết luận, hạn chế và hướng phát triển
 
 **Mục đích:** tóm tắt và kết thúc.
 
@@ -1185,7 +1269,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
 **Hạn chế (nói thẳng, không né):**
 - **Giá rao bán, không phải giá giao dịch:** luôn có phần thương lượng mà mô hình không biết.
 - **Thiếu thông tin quan trọng:** phiên bản xe, số đời chủ, hạn đăng kiểm (có trên trang nhưng chưa lấy, slide 5). Đây là nguyên nhân chính của sai số cao ở xe sang.
-- **Còn sót giá trả trước** (slide 33) và **có tin đăng lại** (ước lượng thận trọng 16-16,5%).
+- **Còn sót giá trả trước** (slide 34) và **có tin đăng lại** (ước lượng thận trọng 16-16,5%).
 - **Mẫu dữ liệu:** chỉ 750 trang mới nhất tại tháng 10/2026; xe trên 10 tỷ đã bị loại nên mô hình không áp dụng cho siêu xe.
 
 **Hướng phát triển:**
@@ -1255,7 +1339,7 @@ Bảng còn cho thấy một điều quan trọng: **R² train 0,93 nhưng R² t
    Xe sang ít; CV dùng mọi phần của train làm validation nên ổn định hơn.
 
 7. **Vì sao chọn Random Forest?**
-   Bắt được quan hệ phi tuyến và tương tác (slide 31), không cần biến đổi đặc trưng số hay chuẩn hóa, có OOB và độ quan trọng đặc trưng để diễn giải, và cho kết quả tốt hơn Ridge có ý nghĩa thống kê.
+   Bắt được quan hệ phi tuyến và tương tác (slide 32), không cần biến đổi đặc trưng số hay chuẩn hóa, có OOB và độ quan trọng đặc trưng để diễn giải, và cho kết quả tốt hơn Ridge có ý nghĩa thống kê.
 
 8. **Vì sao không so với XGBoost / Gradient Boosting?**
    Đề yêu cầu phân tích kỹ một mô hình; Ridge đủ để trả lời câu hỏi phi tuyến giúp bao nhiêu. Gradient Boosting là hướng phát triển.

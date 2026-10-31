@@ -1,0 +1,9 @@
+﻿bước,tham số học từ train,ảnh hưởng
+1. Chia train/test,không (chỉ phân tầng theo phân khúc giá),11.252 / 2.814 tin
+2. Lọc giá trả trước / đặt cọc,bảng trung vị giá 931 nhóm hãng-dòng-năm,"loại 99 tin train, 17 tin test"
+3. Điền thiếu (CarImputer),trung vị km 45 đời xe; mode kiểu dáng / số chỗ theo dòng xe,điền km 653 / 161 xe cũ
+3. Gộp nhãn (BrandModelGrouper),"25 hãng, 178 dòng xe đủ ngưỡng","27 nhóm hãng, 196 nhóm dòng xe"
+"4. Đặc trưng Ridge, group_key",không (công thức),"age², log(km), log(km/năm)"
+"5. Thí nghiệm gộp nhãn, vị trí",CV chỉ trên train,"chọn gộp theo cấp 30 / 10, không dùng vị trí"
+6. Đối chứng điền trong fold,CV chỉ trên train,"chênh lệch MAPE 0,04 điểm %"
+7. Xuất file,,"train_data.csv 11.153 tin, test_data.csv 2.797 tin"

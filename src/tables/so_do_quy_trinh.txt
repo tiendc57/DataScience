@@ -1,0 +1,11 @@
+raw_data_oto.csv
+      ↓   làm sạch bằng quy tắc cứng, xử lý từng dòng (preprocess_data.ipynb)
+preprocess_data.csv          (còn giá trị thiếu)
+      ↓   CHIA TRAIN / TEST  (80/20, phân tầng theo phân khúc giá, random_state = 42)
+   train          test
+      ↓             ↓
+  fit tham số → transform     (lọc nhãn sai, điền thiếu, gộp nhãn; process_data.ipynb)
+      ↓             ↓
+train_data.csv  test_data.csv
+      ↓             ↓
+   huấn luyện    đánh giá một lần   (model.ipynb: one-hot / chuẩn hóa fit trên train)

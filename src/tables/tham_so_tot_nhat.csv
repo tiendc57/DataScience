@@ -1,0 +1,4 @@
+﻿mô hình,tham số tốt nhất,cách chọn,điểm
+Random Forest (thư viện),"{'n_estimators': 300, 'min_samples_leaf': 1, 'max_features': 0.5, 'max_depth': 30}",RandomizedSearchCV 3-fold,CV RMSE (log) 0.2745
+Random Forest (tự cài đặt),"{'max_depth': 30, 'min_samples_leaf': 2, 'max_features': 0.33, 'n_estimators': 100}","OOB, 30 cây mỗi cấu hình",OOB RMSE (log) 0.2775
+Ridge (thư viện),alpha = 0.5623,GridSearchCV 5-fold,CV RMSE (log) 0.2994

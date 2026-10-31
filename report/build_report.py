@@ -444,13 +444,12 @@ para("Chương này trình bày các bước biến dữ liệu thô thành tậ
 
 h2("3.1. Khám phá dữ liệu ban đầu")
 para("Dữ liệu thô có 14.835 dòng và 14 cột. Thị trường tập trung vào các hãng phổ thông: Toyota chiếm khoảng 20% số tin, tiếp theo là Ford, VinFast, Kia, Hyundai (Hình 3.1).")
-figure("03_top_hang.png", 12.5, "Mười hãng xe có nhiều tin đăng nhất (dữ liệu thô)")
-para("Giá rao **lệch phải rất mạnh** (độ lệch skewness = 5,08): đa số xe có giá 200-800 triệu, nhưng có một đuôi dài các xe vài tỷ đến hàng chục tỷ đồng (Hình 3.2). Đặc điểm này ảnh hưởng trực tiếp đến cách chọn biến mục tiêu (mục 3.7).")
-figure("04_phan_bo_gia.png", 13, "Phân bố giá rao bán trên thang gốc và thang log")
+figure("v05_duoi_dai_hang_dong.png", 15, "Số tin theo hãng và dòng xe, xếp giảm dần: đuôi dài nhãn hiếm (dữ liệu thô)")
+para("Giá rao **lệch phải rất mạnh** (độ lệch skewness = 5,08): đa số xe có giá 200-800 triệu, nhưng có một đuôi dài các xe vài tỷ đến hàng chục tỷ đồng . Đặc điểm này ảnh hưởng trực tiếp đến cách chọn biến mục tiêu (mục 3.7).")
 para("Hai yếu tố có quan hệ rõ nhất với giá là **năm sản xuất** và **số km**: xe càng mới giá càng cao, xe chạy càng nhiều km giá càng thấp, và quan hệ không tuyến tính (xe mất giá nhanh trong những năm đầu). Giá cũng chênh lệch lớn giữa các hãng.")
-figure("08_gia_theo_nam.png", 13, "Giá rao theo năm sản xuất")
-figure("05_gia_theo_hang.png", 13, "Phân bố giá theo hãng xe")
-figure("09_km_gia.png", 11.5, "Quan hệ giữa số km đã đi và giá (mật độ tin đăng)")
+figure("p05_eda_gia_theo_tuoi.png", 13, "Giá rao theo tuổi xe (đường cam: giá trung vị)")
+figure("p06_eda_gia_theo_hang.png", 13, "Giá rao trung vị của 15 hãng nhiều tin nhất")
+figure("p07_eda_gia_theo_km.png", 13, "Giá rao theo số km đã đi (xe đã dùng)")
 
 h2("3.2. Chuẩn hóa kiểu dữ liệu và giá trị giả")
 para("Bảng 3.1 thống kê các giá trị \"giả\" trong dữ liệu thô, tức các chuỗi không phải giá trị thật của thuộc tính:")

@@ -1,0 +1,15 @@
+Kết quả phiên bản CŨ (trước khi tách preprocess / process), lấy từ output đã lưu của model.ipynb ngày 31/10/2026.
+
+Dữ liệu: clean_data_oto.csv, 13.937 dòng; train 11.149 | test 2.788 (80/20, phân tầng theo phân khúc giá, random_state = 42).
+Số cột sau mã hóa: Random Forest 277 | Ridge 278.
+
+Cách xử lý cũ:
+- Điền thiếu (trung vị km theo đời xe, mode kiểu dáng / số chỗ theo dòng xe) tính trên TOÀN BỘ dữ liệu, trước khi chia tập.
+- Gộp nhãn hiếm (hãng >= 30, dòng >= 10) đếm tần suất trên TOÀN BỘ dữ liệu.
+- Lọc giá trả trước / đặt cọc (< 30% trung vị hãng-dòng-năm, nhóm >= 3 xe) tính trên TOÀN BỘ dữ liệu, kể cả nhóm "Dòng khác"; loại 129 tin.
+
+Tham số tốt nhất:
+- RF thư viện (RandomizedSearchCV, 3-fold phân tầng): n_estimators=300, max_depth=30, min_samples_leaf=1, max_features=0.5; CV RMSE (log) 0,2692; OOB R² (log) 0,8956.
+- RF tự cài đặt (OOB, 30 cây): max_depth=30, min_samples_leaf=2, max_features=0.5; 100 cây: OOB R² 0,8916.
+- Ridge (GridSearchCV 5-fold): alpha = 0,5623; CV RMSE (log) 0,2879.
+- One-hot vs mã thứ tự (CV MAPE): 0,1637 vs 0,1666-0,1835.

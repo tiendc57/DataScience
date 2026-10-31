@@ -1,0 +1,6 @@
+﻿cột,số thiếu,%,cách xử lý,nơi xử lý
+Xuất xứ,5865,41.5,"nhãn ""Không rõ"" (preprocess)",preprocess_data
+Kiểu dáng,4663,33.0,"mode theo dòng xe, còn lại ""Không rõ"" (process, học từ train)",process_data
+Số chỗ,3579,25.3,"mode theo dòng xe → hãng (process, học từ train)",process_data
+Số km,1479,10.5,xe mới = 0 (preprocess); xe cũ: trung vị theo đời + cờ (process),preprocess_data (xe mới) + process_data (xe cũ)
+Giá,1,0.0,xóa dòng (không điền biến mục tiêu),preprocess_data

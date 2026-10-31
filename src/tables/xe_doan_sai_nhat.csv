@@ -1,0 +1,11 @@
+﻿hãng,dòng xe,năm,tình trạng,số km,giá rao (triệu),dự đoán (triệu),lệch (%),nhận xét
+Mercedes Benz,AMG,2005,Đã sử dụng,200000.0,30.0,235.98169428137084,686.6056476045695,"giá rao cực thấp: có thể giá cọc, xe hư hỏng hoặc nhập thiếu số"
+Daewoo,Matiz,2016,Đã sử dụng,300000.0,23.0,134.2545749837994,483.71554340782336,"giá rao cực thấp: có thể giá cọc, xe hư hỏng hoặc nhập thiếu số"
+Geely,Dòng khác,2026,Mới,0.0,114.0,604.45270307802,430.2216693666843,"xe đời mới, giá rao rất thấp: nghi giá trả trước / đặt cọc lọt lưới"
+Hyundai,Accent,2026,Mới,0.0,90.0,465.0623976457663,416.7359973841848,"xe đời mới, giá rao rất thấp: nghi giá trả trước / đặt cọc lọt lưới"
+MINI,Cooper,2025,Đã sử dụng,91000.0,199.0,751.2866168878013,277.53096326020164,"xe đời mới, giá rao rất thấp: nghi giá trả trước / đặt cọc lọt lưới"
+GAC,M8,2025,Mới,0.0,168.0,621.488624697165,269.933705176884,"xe đời mới, giá rao rất thấp: nghi giá trả trước / đặt cọc lọt lưới"
+Hãng khác,Dòng khác,2008,Đã sử dụng,200000.0,35.0,108.1467750084544,208.99078573844116,"giá rao cực thấp: có thể giá cọc, xe hư hỏng hoặc nhập thiếu số"
+VinFast,Dòng khác,2025,Đã sử dụng,2.0,200.0,589.8330196780579,194.91650983902892,"xe đời mới, giá rao rất thấp: nghi giá trả trước / đặt cọc lọt lưới"
+Mercedes Benz,GLA Class,2015,Đã sử dụng,100000.0,418.0,1199.7331515423746,187.01750036898915,dòng xe hiếm bị gộp '- dòng khác': mô hình chỉ biết mức giá chung của hãng
+Toyota,Corolla,1994,Đã sử dụng,158708.0,25.0,70.0389480946463,180.1557923785852,"giá rao cực thấp: có thể giá cọc, xe hư hỏng hoặc nhập thiếu số"

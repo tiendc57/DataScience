@@ -1,0 +1,14 @@
+﻿cột,ý nghĩa,người bán nhập,kiểu sau xử lý
+mileage_v2 → mileage_km,Số km đã đi,gõ tự do (dạng 109.366),số
+carorigin,Xuất xứ,"chọn từ danh sách (11 giá trị), không bắt buộc",phân loại
+condition_ad,Tình trạng (Mới / Đã sử dụng),chọn từ danh sách,phân loại
+veh_warranty_policy,Chính sách bảo hành,một giá trị duy nhất,bỏ
+carbrand,Hãng,chọn từ danh sách,phân loại
+carmodel,Dòng xe,chọn từ danh sách theo hãng,phân loại
+mfdate,Năm sản xuất,"chọn từ danh sách (có ""trước năm 1980"")",số
+gearbox,Hộp số,chọn từ danh sách (3 giá trị),phân loại
+fuel,Nhiên liệu,chọn từ danh sách (4 giá trị),phân loại
+cartype,Kiểu dáng,"chọn từ danh sách (9 giá trị), không bắt buộc",phân loại
+carseats,Số chỗ,"chọn từ danh sách (có ""Khác""), không bắt buộc",số
+price,Giá rao bán (đồng),gõ tự do,biến mục tiêu
+url,Đường dẫn tin,"sinh tự động, chứa quận/huyện và tỉnh",trích province rồi bỏ
